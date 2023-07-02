@@ -1,0 +1,4 @@
+node_modules/*
+src/gta3.img
+src/output.img
+src/test.img
