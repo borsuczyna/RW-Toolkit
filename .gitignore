@@ -1,4 +1,5 @@
 node_modules/*
-src/gta3.img
-src/output.img
-src/test.img
+src/test/gta3.img
+src/test/output.img
+src/test/test.img
+src/test/test.col
