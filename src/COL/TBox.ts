@@ -22,4 +22,12 @@ export default class TBox {
     getSize(): number {
         return 4 * 6 + this.surface.getSize();
     }
+
+    toString(): string {
+        return `TBox {
+    min: [${this.min[0]}, ${this.min[1]}, ${this.min[2]}],
+    max: [${this.max[0]}, ${this.max[1]}, ${this.max[2]}],
+    surface: ${this.surface.toString()}
+}`;
+    }
 }

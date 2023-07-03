@@ -138,7 +138,9 @@ export class ReadStream {
                     result = buffer.toString("utf8");
                 } else if(this.buffer) result = this.buffer.toString("utf8", this.position, this.position + readLength);
 
-                result = (<string>result).replace(/\uFFFD/g, "").replace(/\0/g, "").trim();
+                result = (<string>result).replace(/\uFFFD/g, "");
+                const nullTermination = (<string>result).indexOf("\0");
+                if(nullTermination !== -1) result = (<string>result).substr(0, nullTermination);
                 
                 break;
             case DataType.Bytes:

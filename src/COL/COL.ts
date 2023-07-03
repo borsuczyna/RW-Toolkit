@@ -70,9 +70,13 @@ export class COL {
         this.modelName = this.readStream.read(DataType.Char, 22);
         this.modelID = this.readStream.read(DataType.UInt16);
 
+        this.bound = new TBounds();
+        this.bound.read(this.readStream);
+
         console.log(`COL Version: ${this.version}`);
         console.log(`COL Size: ${this.size}`);
         console.log(`COL Model Name: ${this.modelName}`);
         console.log(`COL Model ID: ${this.modelID}`);
+        console.log(`COL Bound: ${this.bound}`);
     }
 }

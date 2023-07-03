@@ -1,4 +1,4 @@
-// ---- IMG ----
+/* ---- IMG ----
 
 import { IMG } from "../IMG/IMG";
 
@@ -12,7 +12,7 @@ console.log('-'.repeat(20));
 img.entries.forEach(entry => {
     console.log(`${entry.name} (${entry.streamingSize} bytes) @ ${entry.offsetString}`);
 });
-
+*/
 
 import { COL } from "../COL/COL";
 

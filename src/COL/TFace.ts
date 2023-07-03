@@ -45,4 +45,15 @@ export default class TFace {
             return  2 * 3 + 2;
         }
     }
+
+    toString(): string {
+        return `TFace {
+    a: ${this.a},
+    b: ${this.b},
+    c: ${this.c},
+    material: ${this.material},
+    light: ${this.light},
+    surface: ${this.surface.toString()}
+}`;
+    }
 }

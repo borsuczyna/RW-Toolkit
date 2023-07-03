@@ -36,4 +36,12 @@ export default class TSphere {
     getSize(): number {
         return 4 * 10 + this.surface.getSize();
     }
+
+    toString(): string {
+        return `TSphere {
+    radius: ${this.radius},
+    center: [${this.center[0]}, ${this.center[1]}, ${this.center[2]}],
+    surface: ${this.surface.toString()}
+}`;
+    }
 }

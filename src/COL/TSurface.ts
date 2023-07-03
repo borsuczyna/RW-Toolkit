@@ -26,4 +26,13 @@ export default class TSurface {
     getSize(): number {
         return 4;
     }
+
+    toString(): string {
+        return `TSurface {
+    material: ${this.material},
+    flags: ${this.flags},
+    brightness: ${this.brightness},
+    light: ${this.light}
+}`;
+    }
 }

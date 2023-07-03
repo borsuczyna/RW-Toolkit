@@ -38,4 +38,13 @@ export default class TBounds {
     getSize(): number {
         return 4 * 10;
     }
+
+    toString(): string {
+        return `TBounds {
+    radius: ${this.radius},
+    center: [${this.center[0]}, ${this.center[1]}, ${this.center[2]}],
+    min: [${this.min[0]}, ${this.min[1]}, ${this.min[2]}],
+    max: [${this.max[0]}, ${this.max[1]}, ${this.max[2]}]
+}`;
+    }
 }

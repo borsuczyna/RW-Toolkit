@@ -30,4 +30,13 @@ export default class FaceGroup {
         }
         return 0;
     }
+
+    toString(): string {
+        return `FaceGroup {
+    min: [${this.min[0]}, ${this.min[1]}, ${this.min[2]}],
+    max: [${this.max[0]}, ${this.max[1]}, ${this.max[2]}],
+    startFace: ${this.startFace},
+    endFace: ${this.endFace}
+}`;
+    }
 }

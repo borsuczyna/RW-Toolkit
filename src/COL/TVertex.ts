@@ -10,4 +10,8 @@ export default class TVertex {
     write(writeStream: WriteStream) {
         writeStream.writeSome(DataType.Float, this[0], this[1], this[2]);
     }
+
+    toString(): string {
+        return `[${this[0]}, ${this[1]}, ${this[2]}]`;
+    }
 }
