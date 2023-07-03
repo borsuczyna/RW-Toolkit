@@ -15,5 +15,11 @@ img.entries.forEach(entry => {
 */
 
 import { COL } from "../COL/COL";
+import { WriteStream } from "../utils/stream";
 
-let col = new COL(__dirname + '\\test.col');
+let col2 = new COL(__dirname + '\\test.col');
+col2.regenerateBounds = false;
+col2.save(__dirname + '\\output.col');
+
+let col = new COL(__dirname + '\\output.col');
+console.log(col.toString())

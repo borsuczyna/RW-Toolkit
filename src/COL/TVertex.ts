@@ -1,17 +1,21 @@
 import { DataType, ReadStream, WriteStream } from "../utils/stream";
 
 export default class TVertex {
+    x: number = 0;
+    y: number = 0;
+    z: number = 0;
+
     read(readStream: ReadStream) {
-        this[0] = readStream.read(DataType.Float);
-        this[1] = readStream.read(DataType.Float);
-        this[2] = readStream.read(DataType.Float);
+        this.x = readStream.read(DataType.Float);
+        this.y = readStream.read(DataType.Float);
+        this.z = readStream.read(DataType.Float);
     }
 
     write(writeStream: WriteStream) {
-        writeStream.writeSome(DataType.Float, this[0], this[1], this[2]);
+        writeStream.writeSome(DataType.Float, this.x, this.y, this.z);
     }
 
     toString(): string {
-        return `[${this[0]}, ${this[1]}, ${this[2]}]`;
+        return `[${this.x}, ${this.y}, ${this.z}]`;
     }
 }

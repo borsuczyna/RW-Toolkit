@@ -282,15 +282,20 @@ export class WriteStream {
         }
 
         this.position += writeLength;
+        return this.position - writeLength;
     }
 
     writeSome<T extends number | string | Buffer>(dataType: DataType, ...data: T[]) {
+        let previousPosition = this.position;
         data.forEach(d => this.write(d, dataType));
+        return previousPosition;
     }
 
     overwrite<T extends number | string | Buffer>(data: T, dataType: DataType, position: number, additionLength?: number) {
+        let previousPosition = this.position;
         this.position = position;
         this.write(data, dataType, additionLength);
+        this.position = previousPosition;
     }
 
     peek<T extends number | string | Buffer>(dataType: DataType, additionLength?: number): T {
