@@ -1,4 +1,4 @@
-import { DataType, ReadStream, WriteStream } from "../stream/stream";
+import { DataType, ReadStream, WriteStream } from "../utils/stream";
 import { COLVersion } from "./COL";
 import TSurface from "./TSurface";
 

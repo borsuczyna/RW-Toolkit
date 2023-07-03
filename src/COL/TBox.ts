@@ -1,4 +1,4 @@
-import { DataType, ReadStream, WriteStream } from "../stream/stream";
+import { DataType, ReadStream, WriteStream } from "../utils/stream";
 import TSurface from "./TSurface";
 
 export default class TBox {

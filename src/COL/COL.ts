@@ -1,4 +1,4 @@
-import { DataType, ReadStream } from "../stream/stream";
+import { DataType, ReadStream } from "../utils/stream";
 import * as fs from 'fs';
 import TBounds from "./TBounds";
 import TSphere from "./TSphere";
@@ -73,10 +73,15 @@ export class COL {
         this.bound = new TBounds();
         this.bound.read(this.readStream);
 
-        console.log(`COL Version: ${this.version}`);
-        console.log(`COL Size: ${this.size}`);
-        console.log(`COL Model Name: ${this.modelName}`);
-        console.log(`COL Model ID: ${this.modelID}`);
-        console.log(`COL Bound: ${this.bound}`);
+        if(this.version == 'COL2' || this.version == 'COL3') {
+            this.sphereCount = this.readStream.read(DataType.UInt16);
+            this.boxCount = this.readStream.read(DataType.UInt16);
+            this.faceCount = this.readStream.read(DataType.UInt16);
+            this.lineCount = this.readStream.read(DataType.UInt8);
+            this.trianglePlaneCount = this.readStream.read(DataType.UInt8);
+            this.flags = this.readStream.read(DataType.UInt32);
+
+            // casted from flags
+        }
     }
 }
