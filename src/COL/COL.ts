@@ -29,7 +29,7 @@ export class COL {
     private lineCount: number = 0;
     private trianglePlaneCount: number = 0;
 
-    flags: number = 0;
+    private _flags: number = 0;
     
     offsetSphere: number = 0;
     offsetBox: number = 0;
@@ -57,6 +57,20 @@ export class COL {
     faceGroups: FaceGroup[] = [];
     shadowFaces: TFace[] = [];
     shadowVertices: TVertex[] = [];
+
+    set flags(value: number) {
+        this._flags = value;
+
+        // casted from flags
+        this.useConeInsteadOfLine = bExtract(this.flags, 0) == 1;
+        this.notEmpty = bExtract(this.flags, 1) == 1;
+        this.hasFaceGroup = bExtract(this.flags, 2) == 1;
+        this.hasShadow = bExtract(this.flags, 3) == 1;
+    }
+
+    get flags() {
+        return this._flags;
+    }
 
     // Save settings
     regenerateBounds: boolean = true;
@@ -86,12 +100,6 @@ export class COL {
             this.lineCount = this.readStream.read(DataType.UInt8);
             this.trianglePlaneCount = this.readStream.read(DataType.UInt8);
             this.flags = this.readStream.read(DataType.UInt32);
-
-            // casted from flags
-            this.useConeInsteadOfLine = bExtract(this.flags, 0) == 1;
-            this.notEmpty = bExtract(this.flags, 1) == 1;
-            this.hasFaceGroup = bExtract(this.flags, 2) == 1;
-            this.hasShadow = bExtract(this.flags, 3) == 1;
 
             this.offsetSphere = this.readStream.read(DataType.UInt32);
             this.offsetBox = this.readStream.read(DataType.UInt32);
