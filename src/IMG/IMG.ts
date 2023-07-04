@@ -61,19 +61,37 @@ export class IMG {
     addFile(name: string, data: Buffer) {
         if(this.doesFileExist(name)) return false;
 
-        let offset = this.entries[this.entries.length - 1].offset + this.entries[this.entries.length - 1].sizeInArchive;
+        let offset = 0;
+        for(let entry of this.entries) {
+            offset = entry.offset + entry.streamingSize;
+        }
         let offsetString = offset.toString(16);
         while(offsetString.length < 8) offsetString = '0' + offsetString;
+
+        let size = Math.max(data.length, 2048);
+        if(data.length < 2048) {
+            let padding = Buffer.alloc(2048 - data.length);
+            data = Buffer.concat([data, padding]);
+        }
 
         this.entries.push({
             offset,
             offsetString,
-            streamingSize: data.length,
-            sizeInArchive: data.length,
+            streamingSize: size,
+            sizeInArchive: 0,
             name,
             data,
             temporary: true
         });
+
+        return true;
+    }
+
+    removeFile(name: string) {
+        if(!this.doesFileExist(name)) return false;
+
+        let entry = this.entries.find(entry => entry.name === name)!;
+        this.entries.splice(this.entries.indexOf(entry), 1);
 
         return true;
     }
