@@ -1,6 +1,11 @@
 node_modules/*
 src/test/gta3.img
-src/test/output.img
 src/test/test.img
 src/test/test.col
+src/test/test.dff
 src/test/output.col
+src/test/output.img
+src/DFFold/*
+dist/*
+
+src/TXD/*

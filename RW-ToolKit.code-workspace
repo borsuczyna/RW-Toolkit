@@ -4,8 +4,10 @@
 			"path": "."
 		},
 		{
-			"path": "../../../../Program Files (x86)/MTA San Andreas 1.6/server/mods/deathmatch/resources/mtarwio-ts"
+			"path": "../../../../Program Files (x86)/MTA San Andreas 1.6/server/mods/deathmatch/resources/rwiotest"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "RW-ToolKit"
+	}
 }

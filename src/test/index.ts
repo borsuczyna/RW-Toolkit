@@ -35,6 +35,13 @@
 import DFF from "../DFF/DFF";
 import { RWVersion } from "../DFF/enums";
 
-let dff = new DFF(__dirname + '\\test.dff');
+let startAll = Date.now();
+for(let i = 0; i < 100; i++) {
+    let start = Date.now();
+    let dff = new DFF(__dirname + '\\test.dff');
+    dff.save(__dirname + '\\output.dff');
+    console.log(`Read time: ${Date.now() - start}ms`);
+}
+// let dff = new DFF(__dirname + '\\test.dff');
 // console.log(dff.version == RWVersion.GTASA);
-dff.save(__dirname + '\\output.dff');
+console.log(`Read and write time: ${Date.now() - startAll}ms`);

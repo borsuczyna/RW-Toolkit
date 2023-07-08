@@ -32,6 +32,55 @@ export const dataTypesLength: DataTypesLength = {
     [DataType.Bytes]: 0, // Placeholder value
 };
 
+function readData(dataType: DataType, readLength: number) {
+    let result;
+    const buffer = Buffer.alloc(readLength);
+
+    if (this.file) {
+        fs.read(this.fd, buffer, 0, readLength, this.position, (err, bytesRead) => {
+            if (err) throw err;
+            result = parseBuffer(dataType, buffer, bytesRead);
+        });
+    } else if (this.buffer) {
+        result = parseBuffer(dataType, this.buffer.slice(this.position, this.position + readLength), readLength);
+    }
+
+    return result;
+}
+
+function parseBuffer(dataType: DataType, buffer: Buffer, bytesRead?: number) {
+    switch (dataType) {
+        case DataType.UInt32:
+            return buffer.readUInt32LE(0);
+        case DataType.UInt24:
+            return buffer.readUIntLE(0, bytesRead);
+        case DataType.UInt16:
+            return buffer.readUInt16LE(0);
+        case DataType.UInt8:
+            return buffer.readUInt8(0);
+        case DataType.Int32:
+            return buffer.readInt32LE(0);
+        case DataType.Int24:
+            return buffer.readIntLE(0, bytesRead);
+        case DataType.Int16:
+            return buffer.readInt16LE(0);
+        case DataType.Int8:
+            return buffer.readInt8(0);
+        case DataType.Float:
+            return buffer.readFloatLE(0);
+        case DataType.Char:
+            let str = buffer.toString("utf8", 0, bytesRead);
+            str = str.replace(/\uFFFD/g, "");
+            const nullTermination = str.indexOf("\0");
+            if (nullTermination !== -1) str = str.substr(0, nullTermination);
+            return str;
+        case DataType.Bytes:
+            return buffer;
+        default:
+            throw new Error("Invalid data type.");
+    }
+}
+
 export class ReadStream {
     buffer?: Buffer;
     file?: string;
@@ -42,8 +91,9 @@ export class ReadStream {
     constructor(bufferOrFile: Buffer | string) {
         if (typeof bufferOrFile === "string") {
             if (fs.existsSync(bufferOrFile)) {
-                this.file = bufferOrFile;
-                this.fd = fs.openSync(bufferOrFile, "r");
+                // this.file = bufferOrFile;
+                // this.fd = fs.openSync(bufferOrFile, "r");
+                this.buffer = fs.readFileSync(bufferOrFile);
             } else {
                 this.buffer = Buffer.from(bufferOrFile);
             }
@@ -52,111 +102,20 @@ export class ReadStream {
         }
     }
 
-
-    peek<T extends number | string | Buffer>(dataType: DataType, additionLength?: number): T {
-        let result: number | string | Buffer = 0;
-        let readLength = dataTypesLength[dataType];
-
-        switch (dataType) {
-            case DataType.UInt32:
-                if (this.file) {
-                    const buffer = Buffer.alloc(readLength);
-                    fs.readSync(this.fd!, buffer, 0, readLength, this.position);
-                    result = buffer.readUInt32LE(0);
-                } else if(this.buffer) result = this.buffer.readUInt32LE(this.position);
-
-                break;
-            case DataType.UInt24:
-                if(this.file) {
-                    const buffer = Buffer.alloc(readLength);
-                    fs.readSync(this.fd!, buffer, 0, readLength, this.position);
-                    result = buffer.readUIntLE(0, readLength);
-                } else if(this.buffer) result = this.buffer.readUIntLE(this.position, readLength);
-
-                break;
-            case DataType.UInt16:
-                if(this.file) {
-                    const buffer = Buffer.alloc(readLength);
-                    fs.readSync(this.fd!, buffer, 0, readLength, this.position);
-                    result = buffer.readUInt16LE(0);
-                } else if(this.buffer) result = this.buffer.readUInt16LE(this.position);
-
-                break;
-            case DataType.UInt8:
-                if(this.file) {
-                    const buffer = Buffer.alloc(readLength);
-                    fs.readSync(this.fd!, buffer, 0, readLength, this.position);
-                    result = buffer.readUInt8(0);
-                } else if(this.buffer) result = this.buffer.readUInt8(this.position);
-
-                break;
-            case DataType.Int32:
-                if(this.file) {
-                    const buffer = Buffer.alloc(readLength);
-                    fs.readSync(this.fd!, buffer, 0, readLength, this.position);
-                    result = buffer.readInt32LE(0);
-                } else if(this.buffer) result = this.buffer.readInt32LE(this.position);
-
-                break;
-            case DataType.Int24:
-                if(this.file) {
-                    const buffer = Buffer.alloc(readLength);
-                    fs.readSync(this.fd!, buffer, 0, readLength, this.position);
-                    result = buffer.readIntLE(0, readLength);
-                } else if(this.buffer) result = this.buffer.readIntLE(this.position, readLength);
-
-                break;
-            case DataType.Int16:
-                if(this.file) {
-                    const buffer = Buffer.alloc(readLength);
-                    fs.readSync(this.fd!, buffer, 0, readLength, this.position);
-                    result = buffer.readInt16LE(0);
-                } else if(this.buffer) result = this.buffer.readInt16LE(this.position);
-
-                break;
-            case DataType.Int8:
-                if(this.file) {
-                    const buffer = Buffer.alloc(readLength);
-                    fs.readSync(this.fd!, buffer, 0, readLength, this.position);
-                    result = buffer.readInt8(0);
-                } else if(this.buffer) result = this.buffer.readInt8(this.position);
-
-                break;
-            case DataType.Float:
-                if(this.file) {
-                    const buffer = Buffer.alloc(readLength);
-                    fs.readSync(this.fd!, buffer, 0, readLength, this.position);
-                    result = buffer.readFloatLE(0);
-                } else if(this.buffer) result = this.buffer.readFloatLE(this.position);
-
-                break;
-            case DataType.Char:
-                readLength = additionLength || 1;
-                if(this.file) {
-                    const buffer = Buffer.alloc(readLength);
-                    fs.readSync(this.fd!, buffer, 0, readLength, this.position);
-                    result = buffer.toString("utf8");
-                } else if(this.buffer) result = this.buffer.toString("utf8", this.position, this.position + readLength);
-
-                result = (<string>result).replace(/\uFFFD/g, "");
-                const nullTermination = (<string>result).indexOf("\0");
-                if(nullTermination !== -1) result = (<string>result).substr(0, nullTermination);
-                
-                break;
-            case DataType.Bytes:
-                readLength = additionLength || 1;
-                if(this.file) {
-                    const buffer = Buffer.alloc(readLength);
-                    fs.readSync(this.fd!, buffer, 0, readLength, this.position);
-                    result = buffer;
-                } else if(this.buffer) result = this.buffer.slice(this.position, this.position + readLength);
-
-                break;
-            default:
-                throw new Error("Invalid data type.");
+    peek<T extends number | string | Buffer>(dataType: DataType, readLength: number): T {
+        let result;
+        const buffer = Buffer.alloc(readLength);
+    
+        let currentPosition = this.position;
+    
+        if (this.file) {
+            const bytesRead = fs.readSync(this.fd, buffer, 0, readLength, currentPosition);
+            result = parseBuffer(dataType, buffer, bytesRead);
+        } else if (this.buffer) {
+            result = parseBuffer(dataType, this.buffer.slice(currentPosition, currentPosition + readLength), readLength);
         }
 
-        return result as T;
+        return result;
     }
 
     read<T extends number | string | Buffer>(dataType: DataType, additionLength?: number): T {
@@ -168,7 +127,7 @@ export class ReadStream {
             dataType === DataType.Bytes
         )) readLength = additionLength;
 
-        result = this.peek(dataType, additionLength);
+        result = this.peek(dataType, readLength);
 
         this.position += readLength;
         return result as T;
@@ -211,8 +170,8 @@ export class WriteStream {
 
     constructor(bufferOrFile?: Buffer | string) {
         if (typeof bufferOrFile === "string") {
-            this.file = bufferOrFile;
-            this.fd = fs.openSync(bufferOrFile, "w");
+            // this.file = bufferOrFile;
+            // this.fd = fs.openSync(bufferOrFile, "w");
             this.buffer = Buffer.alloc(0);
         } else if(bufferOrFile) {
             this.buffer = bufferOrFile;
@@ -222,74 +181,63 @@ export class WriteStream {
     }
 
     write<T extends number | string | Buffer>(data: T, dataType: DataType, additionLength?: number) {
-        let writeLength = dataTypesLength[dataType];
-        let buffer: Buffer;
-
+        const writeLength = dataTypesLength[dataType];
+        let buffer = Buffer.alloc(writeLength);
+    
         switch (dataType) {
             case DataType.UInt32:
-                buffer = Buffer.alloc(writeLength);
-                buffer.writeUInt32LE(<number>data, 0);
+                buffer.writeUInt32LE(data as number, 0);
                 break;
             case DataType.UInt24:
-                buffer = Buffer.alloc(writeLength);
-                buffer.writeUIntLE(<number>data, 0, writeLength);
+                buffer.writeUIntLE(data as number, 0, writeLength);
                 break;
             case DataType.UInt16:
-                buffer = Buffer.alloc(writeLength);
-                buffer.writeUInt16LE(<number>data, 0);
+                buffer.writeUInt16LE(data as number, 0);
                 break;
             case DataType.UInt8:
-                buffer = Buffer.alloc(writeLength);
-                buffer.writeUInt8(<number>data, 0);
+                buffer.writeUInt8(data as number, 0);
                 break;
             case DataType.Int32:
-                buffer = Buffer.alloc(writeLength);
-                buffer.writeInt32LE(<number>data, 0);
+                buffer.writeInt32LE(data as number, 0);
                 break;
             case DataType.Int24:
-                buffer = Buffer.alloc(writeLength);
-                buffer.writeIntLE(<number>data, 0, writeLength);
+                buffer.writeIntLE(data as number, 0, writeLength);
                 break;
             case DataType.Int16:
-                buffer = Buffer.alloc(writeLength);
-                buffer.writeInt16LE(<number>data, 0);
+                buffer.writeInt16LE(data as number, 0);
                 break;
             case DataType.Int8:
-                buffer = Buffer.alloc(writeLength);
-                buffer.writeInt8(<number>data, 0);
+                buffer.writeInt8(data as number, 0);
                 break;
             case DataType.Float:
-                buffer = Buffer.alloc(writeLength);
-                buffer.writeFloatLE(<number>data, 0);
+                buffer.writeFloatLE(data as number, 0);
                 break;
             case DataType.Char:
-                writeLength = (additionLength || additionLength === 0) ? additionLength : 1;
-                buffer = Buffer.alloc(writeLength);
-                buffer.write(data as string, 0, writeLength, "utf8");
+                buffer = Buffer.from(data as string, "utf8").slice(0, writeLength);
                 break;
             case DataType.Bytes:
-                writeLength = (additionLength || additionLength === 0) ? additionLength : 1;
-                buffer = <Buffer>data;
+                buffer = data as Buffer;
                 break;
             default:
                 throw new Error("Invalid data type.");
         }
-
+    
         if (this.file) {
             fs.writeSync(this.fd!, buffer, 0, writeLength, this.position);
         } else {
             if (this.buffer.length < this.position + writeLength) {
-                const newBuffer = Buffer.alloc(this.position + writeLength);
+                const newBufferSize = Math.max(this.buffer.length * 2, this.position + writeLength);
+                const newBuffer = Buffer.alloc(newBufferSize);
                 this.buffer.copy(newBuffer);
                 this.buffer = newBuffer;
             }
-
+    
             buffer.copy(this.buffer, this.position);
         }
-
+    
         this.position += writeLength;
         return this.position - writeLength;
-    }
+    }    
 
     writeSome<T extends number | string | Buffer>(dataType: DataType, ...data: T[]) {
         let previousPosition = this.position;

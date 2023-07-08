@@ -1,4 +1,4 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import { ReadStream, WriteStream } from "../utils/stream";
 import Clump from './Clump';
 import Section, { recastSection } from './Section';
@@ -47,14 +47,15 @@ export default class DFF {
         this.clumps.push(clump);
     }
 
-    save(filePath?: string) {
+    save(filePath: string) {
         let writeStream = new WriteStream(filePath || this.filePath);
 
         for(let clump of this.clumps) {
             clump.write(writeStream);
         }
 
-        writeStream.save();
+        let data = writeStream.save();
+        if(filePath) fs.writeFileSync(filePath, data);
     }
 
     convert(version: RWVersion) {
