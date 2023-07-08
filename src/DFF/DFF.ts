@@ -49,13 +49,12 @@ export default class DFF {
 
     save(filePath?: string) {
         let writeStream = new WriteStream(filePath || this.filePath);
-        if(!writeStream.fd) throw new Error("No file descriptor");
 
         for(let clump of this.clumps) {
             clump.write(writeStream);
         }
 
-        writeStream.save();
+        let data = writeStream.save();
     }
 
     convert(version: RWVersion) {

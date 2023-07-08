@@ -263,12 +263,12 @@ export class WriteStream {
                 buffer.writeFloatLE(<number>data, 0);
                 break;
             case DataType.Char:
-                writeLength = additionLength || 1;
+                writeLength = (additionLength || additionLength === 0) ? additionLength : 1;
                 buffer = Buffer.alloc(writeLength);
-                buffer.write(<string>data, 0, writeLength, "utf8");
+                buffer.write(data as string, 0, writeLength, "utf8");
                 break;
             case DataType.Bytes:
-                writeLength = additionLength || 1;
+                writeLength = (additionLength || additionLength === 0) ? additionLength : 1;
                 buffer = <Buffer>data;
                 break;
             default:
@@ -336,7 +336,7 @@ export class WriteStream {
     }
 
     save() {
-        if(this.file) fs.writeFileSync(this.file, this.buffer);
+        if(this.file) return fs.readFileSync(this.file);
         return this.buffer;
     }
 }

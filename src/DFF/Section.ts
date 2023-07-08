@@ -37,7 +37,7 @@ export default class Section {
 
     write(writeStream: WriteStream) {
         writeStream.write(this.type, DataType.UInt32);
-        writeStream.write(this.getSize(), DataType.UInt32);
+        writeStream.write(this.size, DataType.UInt32);
         writeStream.write(this.version || 0, DataType.UInt32);
 
         if(this.methodContinue && this.methodContinue.write) this.methodContinue.write(writeStream);

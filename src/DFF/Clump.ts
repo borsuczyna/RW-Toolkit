@@ -176,10 +176,10 @@ export default class Clump extends Section {
         write: (writeStream: WriteStream) => {
             this.struct.atomicCount = this.atomics.length;
             this.struct.write(writeStream);
-
+            
             // Write frame list
             this.frameList.write(writeStream);
-
+            
             // Write geometry list
             this.geometryList.write(writeStream);
 

@@ -29,6 +29,8 @@ export default class BinMeshPLG extends Section {
                 for(let faceIndex = 0; faceIndex < materialSplit[0]; faceIndex++) {
                     materialSplit[2][faceIndex] = readStream.read(DataType.UInt32);
                 }
+
+                this.materialSplits[i] = materialSplit;
             }
         },
 
@@ -36,21 +38,21 @@ export default class BinMeshPLG extends Section {
             writeStream.write(this.faceType, DataType.UInt32);
             this.materialSplitCount = this.materialSplits.length;
             writeStream.write(this.materialSplitCount, DataType.UInt32);
-
+            
             let vertexCount = 0;
             for(let i = 0; i < this.materialSplitCount; i++) {
                 vertexCount += this.materialSplits[i][2].length;
             }
-
+            
             this.vertexCount = vertexCount;
             writeStream.write(this.vertexCount, DataType.UInt32);
-
+            
             for (let i = 0; i < this.materialSplitCount; i++) {
                 this.materialSplits[i][0] = this.materialSplits[i][2].length;
-
+                
                 writeStream.write(this.materialSplits[i][0], DataType.UInt32);
                 writeStream.write(this.materialSplits[i][1], DataType.UInt32);
-
+                
                 for(let faceIndex = 0; faceIndex < this.materialSplits[i][0]; faceIndex++) {
                     writeStream.write(this.materialSplits[i][2][faceIndex], DataType.UInt32);
                 }
@@ -59,6 +61,7 @@ export default class BinMeshPLG extends Section {
 
         getSize: () => {
             let size = 4 * 3;
+            this.materialSplitCount = this.materialSplits.length;
             for (let i = 0; i < this.materialSplitCount; i++) {
                 size += 8 + this.materialSplits[i][2].length * 4;
             }

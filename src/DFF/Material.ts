@@ -163,11 +163,11 @@ class Material extends Section {
 
         write: (writeStream: WriteStream) => {
             this.struct.write(writeStream);
-
+            
             if(this.struct.isTextured) {
                 this.texture!.write(writeStream);
             }
-
+            
             this.extension.write(writeStream);
         },
 
@@ -261,7 +261,7 @@ export default class MaterialList extends Section {
         write: (writeStream: WriteStream) => {
             this.struct.materialCount = this.materials.length;
             this.struct.write(writeStream);
-
+            
             for (let material of this.materials) {
                 material.write(writeStream);
             }

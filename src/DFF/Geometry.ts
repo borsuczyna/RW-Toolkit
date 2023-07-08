@@ -278,6 +278,7 @@ export class GeometryExtension extends Extension {
         },
 
         write: (writeStream: WriteStream) => {
+            let a = writeStream.position;
             if(this.binMeshPLG) this.binMeshPLG.write(writeStream);
             if(this.skinPLG) this.skinPLG.write(writeStream);
             if(this.morphPLG) this.morphPLG.write(writeStream);
@@ -438,7 +439,7 @@ export default class GeometryList extends Section {
         write: (writeStream: WriteStream) => {
             this.struct.geometryCount = this.geometries.length;
             this.struct.write(writeStream);
-
+            
             for(let geometry of this.geometries) {
                 geometry.write(writeStream);
             }

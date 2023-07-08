@@ -23,14 +23,13 @@ export default class RWString extends Section {
 
         write: (writeStream: WriteStream) => {
             let diff = this.size - this.string.length;
-            writeStream.write(this.string, DataType.Bytes, this.string.length);
+            writeStream.write(this.string, DataType.Char, this.string.length);
             if (diff > 0) {
-                for (let i = 0; i < diff; i++) writeStream.write(0, DataType.Bytes, 1);
+                for (let i = 0; i < diff; i++) writeStream.write('\0', DataType.Char, 1);
             }
         },
 
         getSize: () => {
-            this.size = this.string.length;
             return this.size;
         }
     }
