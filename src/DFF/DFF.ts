@@ -54,7 +54,7 @@ export default class DFF {
             clump.write(writeStream);
         }
 
-        let data = writeStream.save();
+        writeStream.save();
     }
 
     convert(version: RWVersion) {
