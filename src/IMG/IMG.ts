@@ -13,7 +13,7 @@ interface IMGEntry {
     data?: Buffer;
 }
 
-export class IMG {
+export default class IMG {
     readStream: ReadStream;
     version: IMGVersion = 'VER2';
 
@@ -26,10 +26,10 @@ export class IMG {
         this.readStream = new ReadStream(fileOrData);
         if(fs.existsSync(fileOrData)) this.filePath = fileOrData as string;
 
-        this.readData();
+        this.read();
     }
 
-    private readData() {
+    private read() {
         this.version = this.readStream.read(DataType.Char, 4) as IMGVersion;
         if(this.version !== 'VER2') throw new Error('Unsupported IMG version.');
 

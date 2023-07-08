@@ -189,6 +189,12 @@ export class ReadStream {
         this.position = position;
     }
 
+    get length() {
+        if(this.file) return fs.statSync(this.file).size;
+        else if(this.buffer) return this.buffer.length;
+        else return 0;
+    }
+
     close() {
         if (this.fd) {
             fs.closeSync(this.fd);
@@ -330,6 +336,7 @@ export class WriteStream {
     }
 
     save() {
-        return this.file ? fs.writeFileSync(this.file, this.buffer) : this.buffer;
+        if(this.file) fs.writeFileSync(this.file, this.buffer);
+        return this.buffer;
     }
 }
