@@ -36,4 +36,5 @@ import DFF from "../DFF/DFF";
 import { RWVersion } from "../DFF/enums";
 
 let dff = new DFF(__dirname + '\\test.dff');
-console.log(dff.version == RWVersion.GTASA);
+// console.log(dff.version == RWVersion.GTASA);
+dff.save(__dirname + '\\output.dff');
