@@ -74,7 +74,7 @@ export default class Effect2D extends Section {
                 effect.read(readStream);
                 this.effects.push(effect);
 
-                readSize += nextEffect2D.size;
+                readSize += effect.getSize();
                 if(readSize >= this.size) break;
             }
         },

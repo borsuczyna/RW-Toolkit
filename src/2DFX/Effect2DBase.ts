@@ -1,9 +1,10 @@
 import { RWVersion } from "../DFF/enums";
+import {  } from "../test/lights color";
 import { DataType, ReadStream, WriteStream } from "../utils/stream";
 
 export default class Effect2DBase {
     position: [number, number, number] = [0, 0, 0];
-    entryType: number = 0;
+    entryType?: number;
     size: number = 0;
 
     methodContinue?: {
@@ -14,7 +15,7 @@ export default class Effect2DBase {
     };
 
     read(readStream: ReadStream) {
-        if(!this.entryType) {
+        if(!this.entryType && this.entryType != 0) {
             this.position = readStream.readSome(DataType.Float, 3) as [number, number, number];
             this.entryType = readStream.read(DataType.UInt32);
             this.size = readStream.read(DataType.UInt32);

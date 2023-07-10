@@ -1,47 +1,40 @@
-// ---- IMG ----
+import './lights color/index'
 
-// import IMG from "../IMG/IMG";
+// import * as readline from 'readline';
 
-// let img = new IMG(__dirname + '\\test.img');
+// let tests = [
+//     {
+//         name: 'Lights color',
+//         file: 'lights color'
+//     },
+// ];
 
-// img.addFile('test123456789.txt', Buffer.from('Hello dsaj hdusah dusah udsagu dgsauy gdsauyg duysag dyuWorld!'));
-// img.addFile('test3213.txt', Buffer.from('Hello World!'));
-
-// console.log(`IMG Version: ${img.version}`);
-// console.log(`IMG Size: ${img.size}`);
-// console.log(`IMG Entries: ${img.entries.length}`);
-// console.log('-'.repeat(20));
-
-// img.entries.forEach(entry => {
-//     console.log(`${entry.name} (${entry.streamingSize} bytes) - ${img.getFile(entry.name)!.length} @ ${entry.offsetString}`);
+// let readlineSync = readline.createInterface({
+//     input: process.stdin,
 // });
 
-// img.saveToFile(__dirname + '\\output.img');
+// async function question(question: string): Promise<string> {
+//     process.stdout.write(question);
+//     return new Promise((resolve, reject) => {
+//         readlineSync.question(question, (answer) => {
+//             resolve(answer);
+//         });
+//     });
+// }
 
+// async function main() {
+//     console.log('Available tests:')
+//     for(let i = 0; i < tests.length; i++) {
+//         console.log(`${i+1}. ${tests[i].name}`);
+//     }
 
+//     let testIndex = parseInt(await question('\nSelect test: ')) - 1;
+//     console.log('');
 
-// import { COL } from "../COL/COL";
-// import { WriteStream } from "../utils/stream";
+//     let test = tests[testIndex];
+//     import(`./${test.file}/index.ts`);
 
-// let col2 = new COL(__dirname + '\\test.col');
-// col2.regenerateBounds = false;
-// col2.save(__dirname + '\\output.col');
+//     readlineSync.close();
+// }
 
-// let col = new COL(__dirname + '\\output.col');
-// console.log(col.toString())
-
-// DFF
-
-import DFF from "../DFF/DFF";
-import { RWVersion } from "../DFF/enums";
-
-let startAll = Date.now();
-for(let i = 0; i < 100; i++) {
-    let start = Date.now();
-    let dff = new DFF(__dirname + '\\test.dff');
-    dff.save(__dirname + '\\output.dff');
-    console.log(`Read time: ${Date.now() - start}ms`);
-}
-// let dff = new DFF(__dirname + '\\test.dff');
-// console.log(dff.version == RWVersion.GTASA);
-console.log(`Read and write time: ${Date.now() - startAll}ms`);
+// main();

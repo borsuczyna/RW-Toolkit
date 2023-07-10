@@ -32,22 +32,6 @@ export const dataTypesLength: DataTypesLength = {
     [DataType.Bytes]: 0, // Placeholder value
 };
 
-function readData(dataType: DataType, readLength: number) {
-    let result;
-    const buffer = Buffer.alloc(readLength);
-
-    if (this.file) {
-        fs.read(this.fd, buffer, 0, readLength, this.position, (err, bytesRead) => {
-            if (err) throw err;
-            result = parseBuffer(dataType, buffer, bytesRead);
-        });
-    } else if (this.buffer) {
-        result = parseBuffer(dataType, this.buffer.slice(this.position, this.position + readLength), readLength);
-    }
-
-    return result;
-}
-
 function parseBuffer(dataType: DataType, buffer: Buffer, bytesRead?: number) {
     switch (dataType) {
         case DataType.UInt32:
@@ -181,7 +165,7 @@ export class WriteStream {
     }
 
     write<T extends number | string | Buffer>(data: T, dataType: DataType, additionLength?: number) {
-        const writeLength = dataTypesLength[dataType];
+        const writeLength = (additionLength || additionLength == 0) ? additionLength : dataTypesLength[dataType];
         let buffer = Buffer.alloc(writeLength);
     
         switch (dataType) {
@@ -213,7 +197,13 @@ export class WriteStream {
                 buffer.writeFloatLE(data as number, 0);
                 break;
             case DataType.Char:
-                buffer = Buffer.from(data as string, "utf8").slice(0, writeLength);
+                buffer = Buffer.from(data as string, "utf8");
+                if(buffer.length > writeLength) buffer = buffer.slice(0, writeLength);
+                else if(buffer.length < writeLength) {
+                    const newBuffer = Buffer.alloc(writeLength);
+                    buffer.copy(newBuffer);
+                    buffer = newBuffer;
+                }
                 break;
             case DataType.Bytes:
                 buffer = data as Buffer;
