@@ -367,7 +367,85 @@ export class Geometry extends Section {
         }
     }
 
-    // mergeGeometry @TODO
+    mergeGemotry(target: Geometry, clone: boolean = false) {
+        if(
+            this.struct.bTristrip != target.struct.bTristrip ||
+            this.struct.bPosition != target.struct.bPosition ||
+            this.struct.bTextured != target.struct.bTextured ||
+            this.struct.bVertexColor != target.struct.bVertexColor ||
+            this.struct.bNormal != target.struct.bNormal ||
+            this.struct.bLight != target.struct.bLight ||
+            this.struct.bModulateMaterialColor != target.struct.bModulateMaterialColor ||
+            this.struct.bTextured2 != target.struct.bTextured2 ||
+            this.struct.bNative != target.struct.bNative ||
+            this.struct.hasNormals != target.struct.hasNormals
+        ) throw new Error("Can't merge geometry with different flags");
+
+        let targetElement = clone ? new Geometry().init(this.version) : target;
+
+        // Merge struct
+        if(!this.struct.bNative) {
+            if(this.struct.bVertexColor) {
+                targetElement.struct.vertexColors = [...this.struct.vertexColors, ...target.struct.vertexColors];
+            }
+
+            let textureCount = (this.struct.textureCount != 0 ? this.struct.textureCount : ((this.struct.bTextured ? 1 : 0) + (this.struct.bTextured2 ? 1 : 0)));
+            for(let i = 0; i < textureCount; i++) {
+                targetElement.struct.texCoords[i] = [...this.struct.texCoords[i], ...target.struct.texCoords[i]];
+            }
+
+            targetElement.struct.faces = [...this.struct.faces, ...target.struct.faces];
+        }
+
+        targetElement.struct.hasVertices = this.struct.hasVertices || target.struct.hasVertices;
+
+        if(this.struct.hasVertices) {
+            targetElement.struct.vertices = [...this.struct.vertices, ...target.struct.vertices];
+        }
+
+        if(this.struct.hasNormals) {
+            targetElement.struct.normals = [...this.struct.normals, ...target.struct.normals];
+        }
+
+        targetElement.struct.faceCount = this.struct.faces.length;
+        targetElement.struct.vertexCount = this.struct.vertices.length;
+
+        // Merge material
+        targetElement.materialList.struct.materialIndices = [...this.materialList.struct.materialIndices, ...target.materialList.struct.materialIndices];
+        targetElement.materialList.materials = [...this.materialList.materials, ...target.materialList.materials];
+        targetElement.materialList.struct.materialCount = targetElement.materialList.struct.materialIndices.length;
+
+        // Merge extension
+        if(this.extension.binMeshPLG && target.extension.binMeshPLG) {
+            if(this.extension.binMeshPLG.faceType == target.extension.binMeshPLG.faceType) {
+                for(let i = 0; i < this.extension.binMeshPLG.materialSplitCount; i++) {
+                    let matIndex = this.extension.binMeshPLG.materialSplitCount + i;
+                    targetElement.extension.binMeshPLG.materialSplits[matIndex] = [...this.extension.binMeshPLG.materialSplits[i]];
+
+                    for(let faceIndex = 0; faceIndex < target.extension.binMeshPLG.materialSplits[i][0]; i++) {
+                        targetElement.extension.binMeshPLG.materialSplits[matIndex][2][faceIndex] = target.extension.binMeshPLG.materialSplits[i][2][faceIndex] + this.struct.faces.length;
+                    }
+                }
+
+                targetElement.extension.binMeshPLG.materialSplitCount = this.extension.binMeshPLG.materialSplitCount + target.extension.binMeshPLG.materialSplitCount;
+                targetElement.extension.binMeshPLG.vertexCount = this.extension.binMeshPLG.vertexCount + target.extension.binMeshPLG.vertexCount;
+            }
+        } else {
+            targetElement.extension.binMeshPLG.materialSplits = [...this.extension.binMeshPLG?.materialSplits, ...target.extension.binMeshPLG?.materialSplits];
+            targetElement.extension.binMeshPLG.materialSplitCount = this.extension.binMeshPLG?.materialSplitCount + target.extension.binMeshPLG?.materialSplitCount;
+            targetElement.extension.binMeshPLG.vertexCount = this.extension.binMeshPLG?.vertexCount + target.extension.binMeshPLG?.vertexCount;
+        }
+
+        if(this.extension.nightVertexColor && target.extension.nightVertexColor) {
+            if(this.extension.nightVertexColor.hasColor == target.extension.nightVertexColor.hasColor) {
+                targetElement.extension.nightVertexColor.colors = [...this.extension.nightVertexColor.colors, ...target.extension.nightVertexColor.colors];
+            }
+        } else {
+            targetElement.extension.nightVertexColor.colors = [...this.extension.nightVertexColor?.colors, ...target.extension.nightVertexColor?.colors];
+        }
+
+        return targetElement;
+    }
 }
 
 class GeometryListStruct extends Struct {

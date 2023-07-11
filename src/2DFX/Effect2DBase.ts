@@ -1,5 +1,5 @@
 import { RWVersion } from "../DFF/enums";
-import {  } from "../test/lights color";
+import {  } from "../test/adding light";
 import { DataType, ReadStream, WriteStream } from "../utils/stream";
 
 export default class Effect2DBase {

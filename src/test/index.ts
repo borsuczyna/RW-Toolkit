@@ -1,11 +1,11 @@
-import './lights color/index'
+import './main/index'
 
 // import * as readline from 'readline';
 
 // let tests = [
 //     {
-//         name: 'Lights color',
-//         file: 'lights color'
+//         name: 'Adding lights',
+//         file: 'adding light'
 //     },
 // ];
 
