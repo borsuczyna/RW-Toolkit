@@ -1,4 +1,5 @@
 import Effect2D from "../2DFX/2DFX";
+import Effect2DBase from "../2DFX/Effect2DBase";
 import { bAssemble, bExtract } from "../utils/bit";
 import { DataType, ReadStream, WriteStream } from "../utils/stream";
 import BinMeshPLG from "./BinMeshPLG";

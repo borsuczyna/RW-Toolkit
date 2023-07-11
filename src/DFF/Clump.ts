@@ -1,3 +1,4 @@
+import Effect2DBase from "../2DFX/Effect2DBase";
 import { DataType, ReadStream, WriteStream } from "../utils/stream";
 import Atomic from "./Atomic";
 import COLSection from "./COLSection";

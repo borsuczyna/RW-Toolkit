@@ -2,20 +2,20 @@ import { DataType, ReadStream, WriteStream } from "../utils/stream";
 import Effect2DBase from "./Effect2DBase";
 
 export default class Effect2DLight extends Effect2DBase {
-    size: number = 0;
-    color: [number, number, number, number] = [0, 0, 0, 0];
-    coronaFarClip: number = 0;
+    size: number = 80;
+    color: [number, number, number, number] = [255, 255, 255, 255];
+    coronaFarClip: number = 300;
     pointLightRange: number = 0;
-    coronaSize: number = 0;
+    coronaSize: number = 4;
     shadowSize: number = 0;
     coronaShowMode: number = 0;
-    coronaEnableReflection: number = 0;
+    coronaEnableReflection: number = 1;
     coronaFlareType: number = 0;
-    shadowColorMultiplier: number = 0;
-    coronaTexName: string = "";
-    shadowTexName: string = "";
+    shadowColorMultiplier: number = 40;
+    coronaTexName: string = "coronastar";
+    shadowTexName: string = "shad_exp";
     
-    flags1: number = 0;
+    flags1: number = 66;
     // Casted From flags1
     coronaCheckObstacles: boolean = false;
     fogType1: boolean = false;
@@ -26,7 +26,7 @@ export default class Effect2DLight extends Effect2DBase {
     atNight: boolean = false;
     blinkingType1: boolean = false;
     
-    flags2: number = 0;
+    flags2: number = 4;
     // Casted From flags2
     coronaOnlyFromBelow: boolean = false;
     blinkingType2: boolean = false;
@@ -37,7 +37,7 @@ export default class Effect2DLight extends Effect2DBase {
     shadowZDistance: number = 0;
     lookDirectionX: number = 0;
     lookDirectionY: number = 0;
-    lookDirectionZ: number = 0;
+    lookDirectionZ: number = 100;
 
     methodContinue = {
         read: (readStream: ReadStream) => {
